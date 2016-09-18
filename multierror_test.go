@@ -2,10 +2,11 @@ package multierror
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
 
-func Example_multiError() {
+func ExampleNew() {
 	err := New()
 	// err == nil
 
@@ -18,9 +19,24 @@ func Example_multiError() {
 	// err.Add(anErr) != nil
 	// err != nil
 	// err.Error() == "an error"
+	fmt.Println(err)
 
 	err.Add(anErr)
 	// err.Error() == "2 errors: an error; an error"
+
+	fmt.Println(err)
+
+	// Convert existing error error slice
+	myErrors := []errors{
+		errors.New("a"),
+		errors.New("b"),
+		errors.New("c"),
+	}
+
+	err = New(myErrors...)
+	// err.Error() == "3 errors: a; b; c"
+
+	fmt.Println(err)
 }
 
 func TestErrorCompat(t *testing.T) {
