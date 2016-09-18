@@ -5,9 +5,10 @@ import (
 	"strings"
 )
 
-// New nil MultiErrors can be created with New() == nil, or it can be
-// pre-populated with existing errors like New(err1, err2) != nil.
-// To convert an existing slice of errors, use New(myErrors...)
+// New without arguments returns a nil multiError, which can be treated just
+// like a normal nil error value.
+// New can be used to return a pre-populated multiError with existing errors: New(err1, err2)
+// Or convert existing error slices: New(myErrors...)
 func New(errors ...error) multiError {
 	if len(errors) != 0 {
 		return multiError(errors)
@@ -19,7 +20,8 @@ func New(errors ...error) multiError {
 // multiError implements the Error interface, can be checked as nil just like normal errors.
 type multiError []error
 
-// Add an error to multiError, return itself. nils are ignored.
+// Add an error to multiError, return an error representing the multiError state.
+// nil errors are ignored.
 func (e *multiError) Add(err error) error {
 	if err == nil {
 		if len(*e) == 0 {
@@ -43,7 +45,7 @@ func (e *multiError) Add(err error) error {
 func (e multiError) Error() string {
 	if len(e) == 0 {
 		// This behavior is different from normal nil errors which would panic
-		// in this condition. We can replicate the original behavior by
+		// in this condition. We could replicate the original behavior by
 		// removing this if-statement block.
 		return ""
 	}
