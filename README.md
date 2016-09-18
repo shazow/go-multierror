@@ -65,7 +65,36 @@ if err.Add(maybeFail()) != nil { ... }
 // err.Add(nil) == nil and err.Add(error) != nil
 ```
 
-[Check the godocs](https://godoc.org/github.com/shazow/go-multierror) for more 
+## How is this better?
+
+* Other implementations have an additional cast-to-Error function, whereas
+  multierror doesn't need to be casted because it's an Error-satisfying type the
+  entire time.
+
+* `multiError` is an `[]error` type underneath, so a `multiError` can be casted
+  back to a slice of errors and handled as desired. Handy if you want to
+  customize the aggregate error formatting.
+
+* `multiError` retains the "no-error is nil" semantics of normal Errors, and can
+  be used as such without additional casting.
+
+* It's fairly simple and short, less than 50 lines of actual code and lots of
+  tests.
+
+
+## Keep in mind
+
+* It's not goroutine-safe out of the box, same as any other slice type.
+
+* It uses a pointer receiver for `.Add` and a value receiver for `.Error`
+  in order to satisfy the Error semantics. Please open an issue if there are
+  specific problems in this case.
+
+* The `multiError` type is not exposed and can only be assigned using `.New()`,
+  this is because `multiError{} != nil` which breaks the contract that this
+  library is providing.
+
+[Check the godocs](https://godoc.org/github.com/shazow/go-multierror) for more
 details.
 
 
