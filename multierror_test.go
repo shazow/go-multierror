@@ -36,7 +36,7 @@ func ExampleNew_multiple() {
 }
 
 func ExampleNew_convert() {
-	// Convert existing error error slice
+	// Convert existing error slice
 	myErrors := []error{
 		errors.New("a"),
 		errors.New("b"),

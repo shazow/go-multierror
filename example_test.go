@@ -20,23 +20,25 @@ func Example() {
 	// Let's say we're doing a multi-phase set of operations, where errors can
 	// happen independently and we only care about the state between phases.
 
+	// First phase
 	errors.Add(okay("a")) // == nil
 	errors.Add(okay("b")) // == nil
 	errors.Add(okay("c")) // == nil
 
-	// Handle errors?
+	// Handle possible errors
 	if errors != nil {
 		fmt.Println("errors in first phase:", errors)
-		// No output, errors == nil
+		// No output, because errors == nil
 	}
 
+	// Second phase
 	errors.Add(oops("d")) // != nil
 	errors.Add(oops("e")) // != nil
 	errors.Add(okay("f")) // != nil, because an error has already occurred.
 
-	// Handle errors?
+	// Handle pssible errors
 	if errors != nil {
-		// err.Error() == `errors in second phase: "2 errors: failed to d; failed to e"`
+		// err.Error() == "2 errors: failed to d; failed to e"
 
 		fmt.Println("errors in second phase:", errors)
 		// Output: errors in second phase: 2 errors: failed to d; failed to e
