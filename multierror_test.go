@@ -8,14 +8,17 @@ import (
 func Example() {
 	err := New()
 	// err == nil
+
 	err.Add(nil)
 	// err.Add(nil) == nil
 	// err == nil
+
 	anErr := errors.New("an error")
 	err.Add(anErr)
 	// err.Add(anErr) != nil
 	// err != nil
 	// err.Error() == "an error"
+
 	err.Add(anErr)
 	// err.Error() == "2 errors: an error; an error"
 }
