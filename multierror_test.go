@@ -49,6 +49,21 @@ func ExampleNew_convert() {
 	// Output: 3 errors: a; b; c
 }
 
+func ExampleNew_uncast() {
+	// Convert a MultiError back to a normal error slice for processing.
+	multiErr := New(errors.New("a"), errors.New("b"), errors.New("c"))
+
+	// We can convert it back to a slice of errors
+	errs := []error(multiErr)
+	for _, err := range errs {
+		// Deal with errors like you normally would
+		fmt.Println("err:", err)
+	}
+	// Output: err: a
+	// err: b
+	// err: c
+}
+
 func TestErrorCompat(t *testing.T) {
 	err := New()
 
