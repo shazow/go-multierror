@@ -1,7 +1,9 @@
 /*
-multierror is a compact, yet a very usable and versatile, package for working with
-multiple errors.
+Compact yet versatile package for working with multiple errors.
 
-multiError will behave like a normal Error whenever possible.
+MultiError will behave like a normal Error whenever possible.
+
+Perfect for multi-phase operations where components can fail independently and
+errors must be aggregated before handling.
 */
 package multierror
