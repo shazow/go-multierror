@@ -7,41 +7,40 @@ import (
 
 // New nil MultiErrors can be created with New() == nil, or it can be
 // pre-populated with existing errors like New(err1, err2) != nil.
-func New(errors ...error) MultiError {
+// To convert an existing slice of errors, use New(myErrors...)
+func New(errors ...error) multiError {
 	if len(errors) != 0 {
-		return MultiError(errors)
+		return multiError(errors)
 	}
-	var err MultiError = nil
+	var err multiError = nil
 	return err
 }
 
-// MultiError implements the Error interface, can be checked as nil just like normal errors.
-// It can be instantiated as an Error-compliant nil using New, or a slice of
-// errors can be converted directly using err := MultiError(errors)
-type MultiError []error
+// multiError implements the Error interface, can be checked as nil just like normal errors.
+type multiError []error
 
-// Add an error to MultiError, return itself. nils are ignored.
-func (e *MultiError) Add(err error) error {
+// Add an error to multiError, return itself. nils are ignored.
+func (e *multiError) Add(err error) error {
 	if err == nil {
 		if len(*e) == 0 {
-			// nil MultiError.Add(nil) is still nil
+			// nil e.Add(nil) is still nil
 			return nil
 		}
-		// non-nil MultiError.Add(nil) is not nil
+		// non-nil e.Add(nil) is not nil
 		return e
 	}
 	if e == nil {
-		// nil MultiError Add will instantiate itself
+		// nil e.Add(error) will instantiate itself
 		*e = []error{err}
 		return e
 	}
-	// Append to existing non-nil MultiError
+	// Append to existing non-nil e
 	*e = append(*e, err)
 	return e
 }
 
-// Convert MultiError into an aggregated error string, implements the Error interface.
-func (e MultiError) Error() string {
+// Convert multiError into an aggregated error string, implements the Error interface.
+func (e multiError) Error() string {
 	if len(e) == 0 {
 		// This behavior is different from normal nil errors which would panic
 		// in this condition. We can replicate the original behavior by

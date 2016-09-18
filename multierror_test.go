@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func ExampleMultiError() {
+func Example_multiError() {
 	err := New()
 	// err == nil
 
@@ -79,9 +79,9 @@ func TestErrors(t *testing.T) {
 
 // Test the alternate API, using slice lengths.
 func TestAlternate(t *testing.T) {
-	err := MultiError{}
+	err := multiError{}
 	if err == nil {
-		t.Error("manual MultiError is nil")
+		t.Error("manual multiError is nil")
 	}
 
 	err.Add(errors.New("an error"))
@@ -96,15 +96,22 @@ func TestAlternate(t *testing.T) {
 	}
 }
 
-// Test a convenience function of converting many errors to MultiError.
+// Test a convenience function of converting many errors to multiError.
 func TestManyNew(t *testing.T) {
 	err := New(errors.New("an error"), errors.New("another error"))
 
 	if err == nil {
-		t.Error("new MultiError with starting errors is nil")
+		t.Error("new multiError with starting errors is nil")
 	}
 
 	if got, want := err.Error(), "2 errors: an error; another error"; got != want {
+		t.Errorf("got %q; want %q", got, want)
+	}
+
+	myErrors := []error{errors.New("a"), errors.New("b"), errors.New("c")}
+	err = New(myErrors...)
+
+	if got, want := err.Error(), "3 errors: a; b; c"; got != want {
 		t.Errorf("got %q; want %q", got, want)
 	}
 }
