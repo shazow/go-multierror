@@ -21,11 +21,11 @@ err := multierror.New()
 
 err == nil  // Just like a normal error, it can be nil by default.
 
-err.Add(nil)
+err.Append(nil)
 err == nil  // It's still nil, even if we add a nil error
 
 anError := errors.New("some error")
-err.Add(anError)
+err.Append(anError)
 
 err != nil  // Once a non-nil error is added, it's non-nil just like normal errors.
 
@@ -39,9 +39,9 @@ MultiError is convenient to use in different scenarios.
 // Do a bunch of things that might fail independently and check for errors once in the end:
 err := multierror.New()
 
-err.Add(makeNil(...))
-err.Add(makeErr(...))
-err.Add(makeErr(...))
+err.Append(makeNil(...))
+err.Append(makeErr(...))
+err.Append(makeErr(...))
 
 if err != nil {
 	// Oh noes, we had a failure.
@@ -60,9 +60,9 @@ if err := maybeFail(); err != nil { ... }
 // We can do:
 err := multierror.New()
 
-if err.Add(maybeFail()) != nil { ... }
+if err.Append(maybeFail()) != nil { ... }
 
-// err.Add(nil) == nil and err.Add(error) != nil
+// err.Append(nil) == nil and err.Append(error) != nil
 ```
 
 ## How is this better?
@@ -86,7 +86,7 @@ if err.Add(maybeFail()) != nil { ... }
 
 * It's not goroutine-safe out of the box, same as any other slice type.
 
-* It uses a pointer receiver for `.Add` and a value receiver for `.Error`
+* It uses a pointer receiver for `.Append` and a value receiver for `.Error`
   in order to satisfy the Error semantics. Please open an issue if there are
   specific problems in this case.
 

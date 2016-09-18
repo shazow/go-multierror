@@ -10,13 +10,13 @@ func ExampleNew() {
 	err := New()
 	// err == nil
 
-	err.Add(nil)
-	// err.Add(nil) == nil
+	err.Append(nil)
+	// err.Append(nil) == nil
 	// err == nil
 
 	anErr := errors.New("an error")
-	err.Add(anErr)
-	// err.Add(anErr) != nil
+	err.Append(anErr)
+	// err.Append(anErr) != nil
 	// err != nil
 
 	fmt.Println(err)
@@ -28,8 +28,8 @@ func ExampleNew_multiple() {
 	// err == nil
 
 	anErr := errors.New("an error")
-	err.Add(anErr)
-	err.Add(anErr)
+	err.Append(anErr)
+	err.Append(anErr)
 
 	fmt.Println(err)
 	// Output: 2 errors: an error; an error
@@ -79,39 +79,39 @@ func TestErrorCompat(t *testing.T) {
 
 	// Single error should produce the same .Error()
 	anErr := errors.New("some error")
-	err.Add(anErr)
+	err.Append(anErr)
 	if got, want := err.Error(), anErr.Error(); want != got {
 		t.Errorf("got %q; want %q", got, want)
 	}
 }
 
-// Test the primary intended, using New and Add.
+// Test the primary intended, using New and .Append
 func TestErrors(t *testing.T) {
 	err := New()
 	if err != nil {
 		t.Error("new MultiError is not nil")
 	}
 
-	if e := err.Add(nil); e != nil {
-		t.Error("err.Add(nil) returned non-nil")
+	if e := err.Append(nil); e != nil {
+		t.Error("err.Append(nil) returned non-nil")
 	}
 	if err != nil {
-		t.Error("err.Add(nil) is not nil")
+		t.Error("err.Append(nil) is not nil")
 	}
 
 	anErr := errors.New("an error")
-	if e := err.Add(anErr); e == nil {
-		t.Error("err.Add(Error) returned nil")
+	if e := err.Append(anErr); e == nil {
+		t.Error("err.Append(Error) returned nil")
 	}
 	if err == nil {
-		t.Error("err.Add(Error) is nil")
+		t.Error("err.Append(Error) is nil")
 	}
 	if got, want := err.Error(), "an error"; got != want {
 		t.Errorf("got %q; want %q", got, want)
 	}
 
-	if e := err.Add(anErr); e == nil {
-		t.Error("err.Add(Error) returned nil")
+	if e := err.Append(anErr); e == nil {
+		t.Error("err.Append(Error) returned nil")
 	}
 	if got, want := err.Error(), "2 errors: an error; an error"; got != want {
 		t.Errorf("got %q; want %q", got, want)
@@ -125,8 +125,8 @@ func TestAlternate(t *testing.T) {
 		t.Error("manual multiError is nil")
 	}
 
-	err.Add(errors.New("an error"))
-	err.Add(errors.New("another error"))
+	err.Append(errors.New("an error"))
+	err.Append(errors.New("another error"))
 
 	if len(err) != 2 {
 		t.Error("err length is not 2")
