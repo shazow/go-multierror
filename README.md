@@ -17,52 +17,52 @@ import "github.com/shazow/go-multierror"
 MultiError behaves like a normal Error whenever possible.
 
 ```go
-errors := multierror.New()
+err := multierror.New()
 
-errors == nil  // Just like a normal error, it can be nil by default.
+err == nil  // Just like a normal error, it can be nil by default.
 
-errors.Add(nil)
-errors == nil  // It's still nil, even if we add a nil error
+err.Add(nil)
+err == nil  // It's still nil, even if we add a nil error
 
-anErr := errors.New("some error")
-errors.Add(anErr)
+anError := errors.New("some error")
+err.Add(anError)
 
-errors != nil  // Once a non-nil error is added, it's non-nil just like normal errors.
+err != nil  // Once a non-nil error is added, it's non-nil just like normal errors.
 
 // When there is only one error, the aggregated .Error() string is the same.
-errors.Error() == anErr.Error()
+err.Error() == anError.Error()
 ```
 
 MultiError is convenient to use in different scenarios.
 
 ```go
 // Do a bunch of things that might fail independently and check for errors once in the end:
-errors := multierror.New()
+err := multierror.New()
 
-errors.Add(someFunc(...))
-errors.Add(anotherFunc(...))
-errors.Add(maybeThisOne(...))
+err.Add(makeNil(...))
+err.Add(makeErr(...))
+err.Add(makeErr(...))
 
-if errors != nil {
+if err != nil {
 	// Oh noes, we had a failure.
-	log.Fatal(errors.Error())
+    log.Fatal(err.Error())
 	// .Error() will aggregate all the errors into one string, like:
 	// "2 errors: this is one error; this is another error"
 }
 ```
 
 ```go
-errors := multierror.New()
-
 // Can be used similar to how we do errors today:
 
 // Instead of:
 if err := maybeFail(); err != nil { ... }
 
 // We can do:
-if err := errors.Add(maybeFail()); err != nil { ... }
+err := multierror.New()
 
-// Because errors.Add(nil) == nil, just like normal errors
+if err.Add(maybeFail()) != nil { ... }
+
+// err.Add(nil) == nil and err.Add(error) != nil
 ```
 
 [Check the godocs](https://godoc.org/github.com/shazow/go-multierror) for more 
