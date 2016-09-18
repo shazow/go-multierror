@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Example() {
+func ExampleMultiError() {
 	err := New()
 	// err == nil
 
