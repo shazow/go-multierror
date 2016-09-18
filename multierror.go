@@ -20,19 +20,19 @@ func New(errors ...error) multiError {
 // multiError is not exported to avoid confusion from users who run into multiError{} != nil.
 type multiError []error
 
-// Add an error to multiError, return an error representing the multiError state.
+//.Append an error to multiError, return an error representing the multiError state.
 // nil errors are ignored.
-func (e *multiError) Add(err error) error {
+func (e *multiError) Append(err error) error {
 	if err == nil {
 		if len(*e) == 0 {
-			// nil e.Add(nil) is still nil
+			// nil e.Append(nil) is still nil
 			return nil
 		}
-		// non-nil e.Add(nil) is not nil
+		// non-nil e.Append(nil) is not nil
 		return e
 	}
 	if e == nil {
-		// nil e.Add(error) will instantiate itself
+		// nil e.Append(error) will instantiate itself
 		*e = []error{err}
 		return e
 	}

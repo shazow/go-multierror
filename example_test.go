@@ -21,9 +21,9 @@ func Example() {
 	// happen independently and we only care about the state between phases.
 
 	// First phase
-	errors.Add(okay("a")) // == nil
-	errors.Add(okay("b")) // == nil
-	errors.Add(okay("c")) // == nil
+	errors.Append(okay("a")) // == nil
+	errors.Append(okay("b")) // == nil
+	errors.Append(okay("c")) // == nil
 
 	// Handle possible errors
 	if errors != nil {
@@ -32,9 +32,9 @@ func Example() {
 	}
 
 	// Second phase
-	errors.Add(oops("d")) // != nil
-	errors.Add(oops("e")) // != nil
-	errors.Add(okay("f")) // != nil, because an error has already occurred.
+	errors.Append(oops("d")) // != nil
+	errors.Append(oops("e")) // != nil
+	errors.Append(okay("f")) // != nil, because an error has already occurred.
 
 	// Handle pssible errors
 	if errors != nil {
