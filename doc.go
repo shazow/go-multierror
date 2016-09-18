@@ -1,5 +1,5 @@
 /*
-Compact yet versatile package for working with multiple errors.
+MultiError is a compact yet versatile package for working with multiple errors.
 
 MultiError will behave like a normal Error whenever possible.
 

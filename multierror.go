@@ -13,11 +13,11 @@ func New(errors ...error) multiError {
 	if len(errors) != 0 {
 		return multiError(errors)
 	}
-	var err multiError = nil
-	return err
+	return multiError(nil)
 }
 
 // multiError implements the Error interface, can be checked as nil just like normal errors.
+// multiError is not exported to avoid confusion from users who run into multiError{} != nil.
 type multiError []error
 
 // Add an error to multiError, return an error representing the multiError state.
