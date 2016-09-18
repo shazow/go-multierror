@@ -26,7 +26,7 @@ func Example() {
 
 	// Handle errors?
 	if errors != nil {
-		fmt.Printf("errors in first phase: %q\n", errors.Error())
+		fmt.Println("errors in first phase:", errors)
 		// No output, errors == nil
 	}
 
@@ -36,7 +36,9 @@ func Example() {
 
 	// Handle errors?
 	if errors != nil {
-		fmt.Printf("errors in second phase: %q\n", errors.Error())
-		// -> errors in second phase: "2 errors: failed to d; failed to e"
+		// err.Error() == `errors in second phase: "2 errors: failed to d; failed to e"`
+
+		fmt.Println("errors in second phase:", errors)
+		// Output: errors in second phase: 2 errors: failed to d; failed to e
 	}
 }

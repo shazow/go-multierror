@@ -18,25 +18,35 @@ func ExampleNew() {
 	err.Add(anErr)
 	// err.Add(anErr) != nil
 	// err != nil
-	// err.Error() == "an error"
-	fmt.Println(err)
 
+	fmt.Println(err)
+	// Output: an error
+}
+
+func ExampleNew_multiple() {
+	err := New()
+	// err == nil
+
+	anErr := errors.New("an error")
 	err.Add(anErr)
-	// err.Error() == "2 errors: an error; an error"
+	err.Add(anErr)
 
 	fmt.Println(err)
+	// Output: 2 errors: an error; an error
+}
 
+func ExampleNew_convert() {
 	// Convert existing error error slice
-	myErrors := []errors{
+	myErrors := []error{
 		errors.New("a"),
 		errors.New("b"),
 		errors.New("c"),
 	}
 
-	err = New(myErrors...)
-	// err.Error() == "3 errors: a; b; c"
+	err := New(myErrors...)
 
 	fmt.Println(err)
+	// Output: 3 errors: a; b; c
 }
 
 func TestErrorCompat(t *testing.T) {
