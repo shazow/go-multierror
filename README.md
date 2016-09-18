@@ -2,7 +2,9 @@
 
 # go-multierror
 
-There are [many multierror packages](https://godoc.org/?q=multierror) out there. This one is compact yet has a very usable and versatile interface. MultiError behaves like a normal Error whenever possible.
+There are [many multierror packages](https://godoc.org/?q=multierror) out there.
+
+This go-multierror is compact yet has a very usable and versatile interface.
 
 ```
 $ go get github.com/shazow/go-multierror
@@ -11,6 +13,8 @@ $ go get github.com/shazow/go-multierror
 ```go
 import "github.com/shazow/go-multierror"
 ```
+
+MultiError behaves like a normal Error whenever possible.
 
 ```go
 errors := multierror.New()
@@ -24,8 +28,12 @@ anErr := errors.New("some error")
 errors.Add(anErr)
 
 errors != nil  // Once a non-nil error is added, it's non-nil just like normal errors.
-errors.Error() == anErr.Error()  // When there is only one error, the aggregated .Error() string is the same.
+
+// When there is only one error, the aggregated .Error() string is the same.
+errors.Error() == anErr.Error()
 ```
+
+MultiError is convenient to use in different scenarios.
 
 ```go
 // Do a bunch of things that might fail independently and check for errors once in the end:

@@ -20,6 +20,27 @@ func Example() {
 	// err.Error() == "2 errors: an error; an error"
 }
 
+func TestErrorCompat(t *testing.T) {
+	err := New()
+
+	noError := func() error {
+		return nil
+	}
+	noErr := noError()
+
+	// Both should be == nil
+	if (err == nil) != (noErr == nil) {
+		t.Errorf("New() is not the same as a new error: %q != %q", err, noErr)
+	}
+
+	// Single error should produce the same .Error()
+	anErr := errors.New("some error")
+	err.Add(anErr)
+	if got, want := err.Error(), anErr.Error(); want != got {
+		t.Errorf("got %q; want %q", got, want)
+	}
+}
+
 // Test the primary intended, using New and Add.
 func TestErrors(t *testing.T) {
 	err := New()
