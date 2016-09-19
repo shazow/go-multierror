@@ -15,7 +15,7 @@ func okay(input string) error {
 }
 
 func Example() {
-	errors := multierror.New()
+	errors := multierror.MultiError{}
 
 	// Let's say we're doing a multi-phase set of operations, where errors can
 	// happen independently and we only care about the state between phases.
@@ -26,7 +26,7 @@ func Example() {
 	errors.Append(okay("c")) // == nil
 
 	// Handle possible errors
-	if errors != nil {
+	if errors.Err() != nil {
 		fmt.Println("errors in first phase:", errors)
 		// No output, because errors == nil
 	}
@@ -37,7 +37,7 @@ func Example() {
 	errors.Append(okay("f")) // != nil, because an error has already occurred.
 
 	// Handle pssible errors
-	if errors != nil {
+	if errors.Err() != nil {
 		// err.Error() == "2 errors: failed to d; failed to e"
 
 		fmt.Println("errors in second phase:", errors)

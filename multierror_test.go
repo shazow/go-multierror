@@ -7,25 +7,25 @@ import (
 )
 
 func ExampleNew() {
-	err := New()
-	// err == nil
+	err := MultiError{}
+	// err.Err() == nil
 
 	err.Append(nil)
 	// err.Append(nil) == nil
-	// err == nil
+	// err.Err() == nil
 
 	anErr := errors.New("an error")
 	err.Append(anErr)
 	// err.Append(anErr) != nil
-	// err != nil
+	// err.Err() != nil
 
 	fmt.Println(err)
 	// Output: an error
 }
 
 func ExampleNew_multiple() {
-	err := New()
-	// err == nil
+	err := MultiError{}
+	// err.Err() == nil
 
 	anErr := errors.New("an error")
 	err.Append(anErr)
@@ -43,7 +43,7 @@ func ExampleNew_convert() {
 		errors.New("c"),
 	}
 
-	err := New(myErrors...)
+	err := MultiError(myErrors)
 
 	fmt.Println(err)
 	// Output: 3 errors: a; b; c
@@ -51,7 +51,7 @@ func ExampleNew_convert() {
 
 func ExampleNew_uncast() {
 	// Convert a MultiError back to a normal error slice for processing.
-	multiErr := New(errors.New("a"), errors.New("b"), errors.New("c"))
+	multiErr := MultiError{errors.New("a"), errors.New("b"), errors.New("c")}
 
 	// We can convert it back to a slice of errors
 	errs := []error(multiErr)
@@ -65,7 +65,7 @@ func ExampleNew_uncast() {
 }
 
 func TestErrorCompat(t *testing.T) {
-	err := New()
+	err := MultiError{}
 
 	noError := func() error {
 		return nil
@@ -73,7 +73,7 @@ func TestErrorCompat(t *testing.T) {
 	noErr := noError()
 
 	// Both should be == nil
-	if (err == nil) != (noErr == nil) {
+	if (err.Err() == nil) != (noErr == nil) {
 		t.Errorf("New() is not the same as a new error: %q != %q", err, noErr)
 	}
 
@@ -85,18 +85,18 @@ func TestErrorCompat(t *testing.T) {
 	}
 }
 
-// Test the primary intended, using New and .Append
+// Test the primary intended scenario
 func TestErrors(t *testing.T) {
-	err := New()
-	if err != nil {
+	err := MultiError{}
+	if err.Err() != nil {
 		t.Error("new MultiError is not nil")
 	}
 
 	if e := err.Append(nil); e != nil {
 		t.Error("err.Append(nil) returned non-nil")
 	}
-	if err != nil {
-		t.Error("err.Append(nil) is not nil")
+	if err.Err() != nil {
+		t.Error("err.Append(nil) is not nil", err)
 	}
 
 	anErr := errors.New("an error")
@@ -120,9 +120,9 @@ func TestErrors(t *testing.T) {
 
 // Test the alternate API, using slice lengths.
 func TestAlternate(t *testing.T) {
-	err := multiError{}
+	err := MultiError{}
 	if err == nil {
-		t.Error("manual multiError is nil")
+		t.Error("manual MultiError is nil")
 	}
 
 	err.Append(errors.New("an error"))
@@ -137,12 +137,12 @@ func TestAlternate(t *testing.T) {
 	}
 }
 
-// Test a convenience function of converting many errors to multiError.
+// Test a convenience function of converting many errors to MultiError.
 func TestManyNew(t *testing.T) {
-	err := New(errors.New("an error"), errors.New("another error"))
+	err := MultiError{errors.New("an error"), errors.New("another error")}
 
 	if err == nil {
-		t.Error("new multiError with starting errors is nil")
+		t.Error("new MultiError with starting errors is nil")
 	}
 
 	if got, want := err.Error(), "2 errors: an error; another error"; got != want {
@@ -150,7 +150,7 @@ func TestManyNew(t *testing.T) {
 	}
 
 	myErrors := []error{errors.New("a"), errors.New("b"), errors.New("c")}
-	err = New(myErrors...)
+	err = MultiError(myErrors)
 
 	if got, want := err.Error(), "3 errors: a; b; c"; got != want {
 		t.Errorf("got %q; want %q", got, want)

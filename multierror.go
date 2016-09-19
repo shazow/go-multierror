@@ -5,24 +5,22 @@ import (
 	"strings"
 )
 
-// New without arguments returns a nil multiError, which can be treated just
-// like a normal nil error value.
-// New can be used to return a pre-populated multiError with existing errors: New(err1, err2)
-// Or convert existing error slices: New(myErrors...)
-func New(errors ...error) multiError {
-	if len(errors) != 0 {
-		return multiError(errors)
+// MultiError implements the Error interface. Use .Err() to check if it is nil
+// or contains errors.
+type MultiError []error
+
+// Err returns MultiError as an error type, or nil if empty. Use this to check
+// the state of MultiError and whether it contains errors.
+func (e MultiError) Err() error {
+	if len(e) == 0 {
+		return nil
 	}
-	return multiError(nil)
+	return e
 }
 
-// multiError implements the Error interface, can be checked as nil just like normal errors.
-// multiError is not exported to avoid confusion from users who run into multiError{} != nil.
-type multiError []error
-
-//.Append an error to multiError, return an error representing the multiError state.
+// Append an error to MultiError, return an error representing the multiError state.
 // nil errors are ignored.
-func (e *multiError) Append(err error) error {
+func (e *MultiError) Append(err error) error {
 	if err == nil {
 		if len(*e) == 0 {
 			// nil e.Append(nil) is still nil
@@ -41,8 +39,8 @@ func (e *multiError) Append(err error) error {
 	return e
 }
 
-// Convert multiError into an aggregated error string, implements the Error interface.
-func (e multiError) Error() string {
+// Convert MultiError into an aggregated error string, implements the Error interface.
+func (e MultiError) Error() string {
 	if len(e) == 0 {
 		// This behavior is different from normal nil errors which would panic
 		// in this condition. We could replicate the original behavior by
