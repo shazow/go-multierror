@@ -2,6 +2,8 @@
 
 # go-multierror
 
+**Status**: Request For Comments phase. Please open issues for discussion.
+
 There are [many multierror packages](https://godoc.org/?q=multierror) out there.
 
 This go-multierror is compact yet has a very usable and versatile interface.
