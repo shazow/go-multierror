@@ -2,102 +2,16 @@
 
 # go-multierror
 
-**Status**: Request For Comments phase. Please open issues for discussion.
+**Status**: The original intended design of this library was [fatally
+flawed](https://github.com/shazow/go-multierror/issues/2), now that it's fixed
+it's reduced to being very similar to existing popular solutions:
 
-There are [many multierror packages](https://godoc.org/?q=multierror) out there.
+* [github.com/hashicorp/go-multierror](https://github.com/hashicorp/go-multierror)
+* [github.com/joeshaw/multierror](https://github.com/joeshaw/multierror)
 
-This go-multierror is compact yet has a very usable and versatile interface.
+I suggest using one of those instead.
 
-```
-$ go get github.com/shazow/go-multierror
-```
-
-```go
-import "github.com/shazow/go-multierror"
-```
-
-MultiError behaves like a normal Error whenever possible.
-
-```go
-err := multierror.New()
-
-err == nil  // Just like a normal error, it can be nil by default.
-
-err.Append(nil)
-err == nil  // It's still nil, even if we add a nil error
-
-anError := errors.New("some error")
-err.Append(anError)
-
-err != nil  // Once a non-nil error is added, it's non-nil just like normal errors.
-
-// When there is only one error, the aggregated .Error() string is the same.
-err.Error() == anError.Error()
-```
-
-MultiError is convenient to use in different scenarios.
-
-```go
-// Do a bunch of things that might fail independently and check for errors once in the end:
-err := multierror.New()
-
-err.Append(makeNil(...))
-err.Append(makeErr(...))
-err.Append(makeErr(...))
-
-if err != nil {
-	// Oh noes, we had a failure.
-    log.Fatal(err.Error())
-	// .Error() will aggregate all the errors into one string, like:
-	// "2 errors: this is one error; this is another error"
-}
-```
-
-```go
-// Can be used similar to how we do errors today:
-
-// Instead of:
-if err := maybeFail(); err != nil { ... }
-
-// We can do:
-err := multierror.New()
-
-if err.Append(maybeFail()) != nil { ... }
-
-// err.Append(nil) == nil and err.Append(error) != nil
-```
-
-## How is this better?
-
-* Other implementations have an additional cast-to-Error function, whereas
-  multierror doesn't need to be casted because it's an Error-satisfying type the
-  entire time.
-
-* `multiError` is an `[]error` type underneath, so a `multiError` can be casted
-  back to a slice of errors and handled as desired. Handy if you want to
-  customize the aggregate error formatting.
-
-* `multiError` retains the "no-error is nil" semantics of normal Errors, and can
-  be used as such without additional casting.
-
-* It's fairly simple and short, less than 50 lines of actual code and lots of
-  tests.
-
-
-## Keep in mind
-
-* It's not goroutine-safe out of the box, same as any other slice type.
-
-* It uses a pointer receiver for `.Append` and a value receiver for `.Error`
-  in order to satisfy the Error semantics. Please open an issue if there are
-  specific problems in this case.
-
-* The `multiError` type is not exposed and can only be assigned using `.New()`,
-  this is because `multiError{} != nil` which breaks the contract that this
-  library is providing.
-
-[Check the godocs](https://godoc.org/github.com/shazow/go-multierror) for more
-details.
+[More options here](https://godoc.org/?q=multierror).
 
 
 ## License
